@@ -14,6 +14,9 @@
       <div class="row justify-content-center">
         <div class="col-md-6 col-lg-4">
           <h2 class="fs-4 mb-3">請先登入</h2>
+          <div v-if="errMsg" class="alert alert-danger alert-dismissible mb-3" role="alert">
+            {{ errMsg }}
+          </div>
           <div class="form-floating mb-3">
             <input type="email" class="form-control" id="email" placeholder="請輸入帳號" v-model="user.username">
             <label for="email">帳號</label>
@@ -38,7 +41,8 @@
     const app = {
       data () {
         return {
-          user: {}
+          user: {},
+          errMsg: ''
         }
       },
       methods: {
@@ -47,10 +51,10 @@
           axios.post(url, this.user)
             .then((res) => {
               document.cookie = `PToken=${res.data.token}; expires=${new Date(res.data.expired)}; path=/`;
-              window.location = './Vue2022_week3/products.html';
+              window.location = './products.html';
             })
             .catch((err) => {
-              console.dir(err);
+              this.errMsg = err.response.data.message;
             })
         }
       }
